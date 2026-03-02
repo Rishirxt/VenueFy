@@ -1,0 +1,27 @@
+{
+  "_id": "699a85f665ff99acb170ebe3",
+  "title": "Maa",
+  "description": "The story of a mother who becomes Kali to end a demonic curse.",
+  "duration": "2h 15m",
+  "genre": [
+    "Fantasy",
+    "Horror",
+    "Mythological",
+    "Thriller"
+  ],
+  "releaseDate": "2025-06-27T00:00:00.000Z",
+  "languages": [
+    "Hindi",
+    "English"
+  ],
+  "certification": "UA16+",
+  "posterUrl": "https://res.cloudinary.com/amitrajmaurya/image/upload/v1751790461/jn7s11xkmp7caoqgpwwi.avif",
+  "rating": 7.2,
+  "votes": 2700,
+  "format": [
+    "2D"
+  ],
+  "__v": 0,
+  "createdAt": "2026-02-22T04:28:38.534Z",
+  "updatedAt": "2026-02-22T04:28:38.534Z"
+}

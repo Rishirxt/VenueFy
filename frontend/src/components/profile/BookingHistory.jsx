@@ -1,55 +1,95 @@
-import React from 'react'
-import { ordersData } from '../../utils/constants'
+import React, { useEffect, useState } from 'react'
 import { MdChair } from 'react-icons/md'
+import { useAuth } from '../../context/AuthContext'
+import { Link } from 'react-router-dom'
 
 const BookingHistory = () => {
+    const { fetchMyOrders } = useAuth();
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadOrders = async () => {
+            const result = await fetchMyOrders();
+            if (result.success) {
+                setOrders(result.orders);
+            }
+            setLoading(false);
+        };
+        loadOrders();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20">
+                <div className="w-10 h-10 border-4 border-gray-200 border-t-[#f84464] rounded-full animate-spin"></div>
+                <p className="text-gray-400 mt-4 font-medium italic">Loading your history...</p>
+            </div>
+        );
+    }
+
+    if (orders.length === 0) {
+        return (
+            <div className="px-6 py-20 rounded-md text-center bg-gray-50/50 border border-dashed border-gray-200">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">No bookings yet</h3>
+                <p className="text-gray-500 mb-6">You haven't booked any movies yet. Ready for a show?</p>
+                <Link
+                    to="/"
+                    className="bg-[#f84464] text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all"
+                >
+                    Explore Movies
+                </Link>
+            </div>
+        );
+    }
+
     return (
         <div className='px-6 rounded-md'>
             <h3 className='text-xl font-semibold mb-6'>Booking History</h3>
 
-            {ordersData.map((order) => {
+            {orders.map((order) => {
                 const seats = Array.isArray(order.seats) ? order.seats.join(', ') : order.seats || 'N/A'
-                const dateTime = order.datetime || order.bookingTime || 'N/A'
+                const dateTime = order.showTime || 'N/A'
                 return (
-                    <div key={order.id} className='bg-white p-5 rounded-md mb-4 shadow-sm'>
+                    <div key={order._id} className='bg-white p-5 rounded-md mb-4 shadow-sm border border-gray-50 hover:shadow-md transition-shadow'>
                         <div className='flex gap-6'>
                             <img
-                                src={order.poster}
-                                alt={`${order.title} poster`}
-                                className='w-32 h-48 object-cover rounded-md flex-shrink-0'
+                                src={order.moviePoster}
+                                alt={`${order.movieTitle} poster`}
+                                className='w-32 h-44 object-cover rounded-md flex-shrink-0 bg-gray-100'
                             />
 
                             <div className='flex-1 flex flex-col justify-between'>
                                 <div>
                                     <div className='flex items-start justify-between'>
                                         <div>
-                                            <p className='font-semibold text-lg'>{order.title}</p>
-                                            <p className='text-sm text-gray-500 mt-1'>{order.format}</p>
-                                            <p className='text-sm font-medium text-gray-700 mt-3'>{dateTime}</p>
-                                            <p className='text-sm text-gray-600 mt-1'>{order.cinema}</p>
+                                            <p className='font-bold text-xl text-gray-900 uppercase tracking-tight'>{order.movieTitle}</p>
+                                            <p className='text-[10px] font-black text-[#f84464] mt-1 uppercase tracking-widest'>M-Ticket • {order.status}</p>
+                                            <p className='text-sm font-bold text-gray-700 mt-4'>{dateTime}</p>
+                                            <p className='text-sm text-gray-500 mt-1 uppercase font-medium'>{order.cinemaName}</p>
                                         </div>
-                                        <span className='text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded'>M-Ticket</span>
+                                        <div className="bg-gray-50 p-2 rounded flex flex-col items-center min-w-[60px]">
+                                            <span className="text-[10px] font-black text-gray-400 uppercase">Qty</span>
+                                            <span className="text-lg font-black text-gray-800">{order.quantity}</span>
+                                        </div>
                                     </div>
 
                                     <div className='mt-4 text-sm text-gray-700'>
                                         <div className='flex items-center gap-2'>
-                                            <MdChair className='inline items-center mr-2 text-gray-600' size={18} />
-                                            <span className='font-medium'>{seats}</span>
+                                            <MdChair className='text-gray-400' size={18} />
+                                            <span className='font-bold text-gray-800'>{seats}</span>
                                         </div>
-                                        <div className='mt-2'>Quantity: <span className='font-medium'>{order.quantity}</span></div>
                                     </div>
                                 </div>
 
-                                <div className='mt-4 p-3 bg-gray-50 rounded flex items-center justify-between'>
-                                    <div className='text-sm text-gray-700'>
-                                        <div>Payment: <span className='font-medium'>{order.paymentMethod}</span></div>
-                                        <div className='mt-1'>Booking ID: <span className='font-medium'>{order.id}</span></div>
-                                        <div className='mt-1'>Booked at: <span className='font-medium'>{order.bookingTime}</span></div>
+                                <div className='mt-6 pt-4 border-t border-gray-50 flex items-end justify-between'>
+                                    <div className='text-[10px] text-gray-400 font-bold uppercase tracking-widest'>
+                                        <div className='mb-1'>ID: <span className='text-gray-600'>{order._id.slice(-8).toUpperCase()}</span></div>
+                                        <div>Booked: <span className='text-gray-600'>{new Date(order.bookingTime).toLocaleDateString()}</span></div>
                                     </div>
                                     <div className='text-right'>
-                                        <div className='text-sm'>Ticket: ₹{Number(order.ticket).toFixed(2)}</div>
-                                        <div className='text-sm'>Convenience Fee: ₹{Number(order.fee).toFixed(2)}</div>
-                                        <div className='font-semibold text-lg mt-1'>Total: ₹{Number(order.total).toFixed(2)}</div>
+                                        <span className='text-[10px] font-black text-gray-400 uppercase block mb-1'>Total Paid</span>
+                                        <div className='font-black text-2xl text-gray-900'>₹{Number(order.totalAmount).toFixed(2)}</div>
                                     </div>
                                 </div>
                             </div>

@@ -1,0 +1,12 @@
+{
+  "watch": [
+    "src",
+    "utils",
+    "routes"
+  ],
+  "ext": "ts",
+  "ignore": [
+    "dist"
+  ],
+  "exec": "tsx index.ts"
+}

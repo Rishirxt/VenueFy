@@ -16,13 +16,14 @@ export const LocationProvider = ({ children }) => {
     const fetchLocationData = async (latitude, longitude) => {
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          `${import.meta.env.VITE_BACKEND_URL}/location/reverse?lat=${latitude}&lon=${longitude}`
         );
 
         const data = await res.json();
         const userLocation = data?.address?.state || null;
 
         setLocation(userLocation);
+
       } catch (error) {
         setError(error.message);
       } finally {
@@ -35,8 +36,9 @@ export const LocationProvider = ({ children }) => {
         const { latitude, longitude } = position.coords;
         fetchLocationData(latitude, longitude);
       },
-      () => {
-        console.error("Error getting location");
+      (error) => {
+        console.error("Error getting location:", error);
+        setError("Unable to access location. Please enable location services.");
         setLoading(false);
       }
     );
