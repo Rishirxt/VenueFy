@@ -1,103 +1,152 @@
-# VenueFy
+# VenueFy 🎟️
 
-A full-stack web application for discovering and booking venues — streamlining how users find, evaluate, and secure event spaces.
+**VenueFy** is a modern, full-stack entertainment booking platform designed to streamline how users discover movies, live events, and secure their bookings with interactive seat selection.
 
-```
-VenueFy/
-├── backend/        # API server & business logic
-├── frontend/       # Client-side UI
-├── clear_db.ts     # Database reset utility
-└── README.md
-```
+<div align="center">
+  <img src="frontend/src/assets/VenueFy.png" alt="VenueFy Logo" width="200"/>
+</div>
+
+---
+
+## � Presentation Highlights
+
+- **Seamless Rebranding**: Successfully transitioned from "BookMyScreen" to a more premium "VenueFy" identity.
+- **Dynamic Live Events**: A newly implemented module for browsing and booking tickets for concerts, sports, and theatre performances.
+- **Interactive Seat Mapping**: Real-time seat selection with distinct pricing tiers and availability status.
+- **Location-Aware Experience**: Smart filtering based on user-selected cities to show relevant local content.
+
+---
+
+## ✨ Key Features
+
+### 🎬 Entertainment Discovery
+- **Movie Hub**: Browse trending and now-showing movies with detailed descriptions, ratings, and trailers.
+- **Live Events**: Discover music festivals, stand-up comedy, and local workshops in a dedicated ecosystem.
+- **Smart Filtering**: Filter by location, date, genres, and event types.
+
+### 🎟️ Booking Experience
+- **Theatre & Showtimes**: Integrated view of all theatres hosting a specific movie with multiple time slots.
+- **Visual Seat Selection**: Interactive grid layout showing available, booked, and selected seats.
+- **Unified Checkout**: Simplified booking flow for both cinema and live event tickets.
+
+### 👤 User & Order Management
+- **Personalized Profile**: Manage account details and view booking records.
+- **Booking History**: Access past tickets, view QR-ready order details, and track spent history.
+- **Secure Authentication**: Robust registration and login system with persistent sessions.
+
+---
 
 ## 🛠️ Tech Stack
 
-| Layer     | Technology          |
-|-----------|---------------------|
-| Frontend  | JavaScript / React  |
-| Backend   | TypeScript / Node.js |
-| Database  | (MongoDB)     |
+### Frontend (Modern UI/UX)
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite](https://vite.dev/)
+- **Styling**: [TailwindCSS 4](https://tailwindcss.com/)
+- **State Management**: [TanStack Query v5](https://tanstack.com/query/latest)
+- **Routing**: [React Router 7](https://reactrouter.com/en/main)
+- **Components**: Swiper, React Icons, Slick Carousel
 
-> **Languages:** JavaScript (65%) · TypeScript (34%)
+### Backend (Scalable Architecture)
+- **Runtime**: [Node.js](https://nodejs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Web Framework**: [Express 5](https://expressjs.com/)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
+- **Authentication**: JWT (JSON Web Tokens) with Cookie-based storage
+- **Utilities**: Nodemailer, Mailgen, Zod (Validation), Day.js
+
+---
+
+## � Project Structure
+
+```bash
+VenueFy/
+├── backend/                   # API Server & Business Logic
+│   ├── src/
+│   │   ├── modules/           # Modular domain logic (User, Movie, Show, Order, etc.)
+│   │   ├── config/            # Database and App configurations
+│   ├── routes/                # Route definitions
+│   ├── seed-*.ts              # Specialized data seeders (movies, shows, events)
+│   └── index.ts               # Server Entry Point
+├── frontend/                  # Client-Side Application
+│   ├── src/
+│   │   ├── pages/             # Route-level components (Home, Movies, SeatLayout, etc.)
+│   │   ├── components/        # Reusable UI elements (Header, Footer, MovieCards)
+│   │   ├── context/           # Global states (Auth, Location)
+│   │   ├── apis/              # API interaction layer
+│   │   └── assets/            # Static files and logos
+├── clear_db.ts                # Database reset utility
+└── README.md
+```
+
+---
 
 ## 🏁 Getting Started
 
-### Prerequisites
-
+### 1. Prerequisites
 - Node.js (v18+)
-- npm or yarn
+- MongoDB (Running locally or via Atlas)
 
-### 1. Clone the Repository
-
-**1. Clone the repository**
+### 2. Installation
 ```bash
+# Clone the repository
 git clone https://github.com/Rishirxt/VenueFy.git
 cd VenueFy
-```
 
-**2. Set up the backend**
-```bash
+# Install Backend dependencies
 cd backend
 npm install
-```
 
-**3. Set up the frontend**
-```bash
+# Install Frontend dependencies
 cd ../frontend
 npm install
 ```
 
-**4. Configure environment variables**
+### 3. Environment Setup
+Create a `.env` file in the `backend` directory:
+```env
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_secret_key
+EMAIL_USER=your_email
+EMAIL_PASS=your_app_password
+```
 
-Create `.env` files in both `backend/` and `frontend/` based on any `.env.example` files provided.
-
-### Running the App
-
-**Backend:**
+### 4. Database Seeding
+Populate your database with initial data:
 ```bash
 cd backend
+npm run seed:theaters
+npm run seed:movies
+npm run seed:shows
+npm run seed:events
+```
+
+### 5. Running the Application
+```bash
+# In backend directory
+npm run dev
+
+# In frontend directory
 npm run dev
 ```
 
-**Frontend:**
-```bash
-cd frontend
-npm run dev
-```
-
-## 🗄️ Database Utilities
-
-To reset the database during development:
-```bash
-npx ts-node clear_db.ts
-```
-
-> ⚠️ This will wipe all data. Use with caution.
-
-## 📁 Project Structure
-
-```
-backend/
-│   ├── routes/         # API endpoints
-│   ├── controllers/    # Request handlers
-│   ├── models/         # Data models / schemas
-│   └── ...
-
-frontend/
-│   ├── src/
-│   │   ├── components/ # Reusable UI components
-│   │   ├── pages/      # App views/routes
-│   │   └── ...
-```
-
-> Actual structure may vary — refer to the source directories for details.
+---
 
 ## 🤝 Contributing
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-1. Fork the repo
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push and open a Pull Request
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
 
 ## 📄 License
-This project is open source. See the repository for license details.
+This project is licensed under the ISC License.
+
+---
+<div align="center">
+  Built with ❤️ by <a href="https://github.com/Rishirxt">Rishirxt</a>
+</div>
