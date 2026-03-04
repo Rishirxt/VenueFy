@@ -52,7 +52,7 @@ const BookingHistory = () => {
                 const title = isEvent ? order.eventTitle : order.movieTitle;
                 const poster = isEvent ? order.eventPoster : order.moviePoster;
                 const venue = isEvent ? order.venueName : order.cinemaName;
-                const time = isEvent ? `${order.eventDate} · ${order.eventTime}` : order.showTime;
+                const time = isEvent ? `${order.eventDate} · ${order.eventTime}` : `${order.showDate || ''} · ${order.showTime}`;
                 const seats = !isEvent && Array.isArray(order.seats) ? order.seats.join(', ') : null;
 
                 return (

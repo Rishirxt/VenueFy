@@ -49,6 +49,7 @@ const Checkout = () => {
             moviePoster: showData.movie.posterUrl,
             cinemaName: showData.theater.name,
             showTime: showData.startTime,
+            showDate: showData.date,
             seats: selectedSeats.map(s => `${s.row}-${s.number}`),
             quantity: selectedSeats.length,
             totalAmount: totalToPay,

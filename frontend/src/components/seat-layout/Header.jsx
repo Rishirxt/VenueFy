@@ -1,5 +1,5 @@
 import React from 'react';
-import mainLogo from "../../assets/main-icon.png";
+import mainLogo from "../../assets/VenueFy.png";
 import { useNavigate, Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -39,7 +39,7 @@ const Header = ({ showData, type }) => {
                             {showData?.movie.title || "Movie Title"}
                         </h1>
                         <p className="text-[13px] font-medium text-gray-400 mt-0.5">
-                            {displayDate.isValid() ? displayDate.format("D MMMM YYYY") : "Date"} • {showData?.startTime || "Time"} at {showData?.theater.name}, {showData?.theater.city}
+                            {type === "checkout" && displayDate.isValid() ? `${displayDate.format("D MMMM YYYY")} • ` : ""}{showData?.startTime || "Time"} • {showData?.audioType?.toUpperCase() || "DOLBY ATMOS"}
                         </p>
                     </div>
                 )}

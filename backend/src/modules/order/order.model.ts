@@ -9,6 +9,7 @@ const orderSchema = new Schema<IOrder>({
     moviePoster: { type: String },
     cinemaName: { type: String },
     showTime: { type: String },
+    showDate: { type: String },
     seats: [{ type: String }],
     // Event fields
     eventId: { type: Schema.Types.ObjectId, ref: 'Event' },

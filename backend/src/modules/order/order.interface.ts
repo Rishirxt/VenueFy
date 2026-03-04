@@ -8,6 +8,7 @@ export interface IOrder extends Document {
     moviePoster?: string;
     cinemaName?: string;
     showTime?: string;
+    showDate?: string;
     seats?: string[];
     // Event fields (optional)
     eventId?: mongoose.Types.ObjectId;

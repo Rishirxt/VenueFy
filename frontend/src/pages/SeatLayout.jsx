@@ -72,37 +72,6 @@ const SeatLayout = () => {
         <div className="flex flex-col h-screen bg-white font-sans overflow-hidden">
             <Header showData={showData} />
 
-            {/* Interactive Scheduling Bar */}
-            <div className="bg-white border-b border-gray-50 py-4 shadow-sm z-10 overflow-x-auto no-scrollbar">
-                <div className="max-w-7xl mx-auto px-6 flex items-center gap-6">
-                    <div className="flex gap-4">
-                        {dates.map((date, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setSelectedDateIndex(idx)}
-                                className={`flex flex-col items-center min-w-[60px] py-2 rounded-xl transition-all
-                                    ${selectedDateIndex === idx
-                                        ? "bg-[#9b59b6] text-white shadow-md shadow-purple-100"
-                                        : "hover:bg-gray-50 text-gray-500"}`}
-                            >
-                                <span className="text-[10px] uppercase font-bold tracking-tighter opacity-70">{date.format("ddd")}</span>
-                                <span className="text-sm font-black">{date.format("DD")}</span>
-                                <span className="text-[10px] uppercase font-bold tracking-tighter opacity-70">{date.format("MMM")}</span>
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="h-10 w-[1px] bg-gray-100"></div>
-
-                    <button className="flex flex-col items-center px-8 py-2 rounded-xl border-2 border-[#9b59b6] bg-purple-50 group transition-all">
-                        <span className="text-sm font-black text-[#9b59b6] uppercase">{showData?.startTime || "04:00 PM"}</span>
-                        <span className="text-[9px] font-black text-[#9b59b6]/60 tracking-widest leading-tight uppercase group-hover:text-[#9b59b6]">
-                            {showData?.audioType || "IMAX"} 2D
-                        </span>
-                    </button>
-                </div>
-            </div>
-
             <main className="flex-1 overflow-y-auto px-4 md:px-8 py-10 no-scrollbar bg-gray-50/30">
                 <div className="max-w-5xl mx-auto flex flex-col items-center">
 
