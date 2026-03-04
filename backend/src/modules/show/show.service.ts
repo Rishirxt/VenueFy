@@ -64,3 +64,17 @@ export const updateMultipleSeatsStatus = async (
 
     return await Promise.all(operations);
 }
+
+// 5. get all shows (for the theatre shows page)
+export const getAllShows = async (location: string) => {
+    const query: any = {};
+    if (location) {
+        query.location = { $regex: new RegExp(location, 'i') };
+    }
+
+    const shows = await ShowModel.find(query)
+        .populate("movie theater")
+        .sort({ startTime: 1 });
+
+    return shows;
+}

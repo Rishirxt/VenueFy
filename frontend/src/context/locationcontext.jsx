@@ -45,7 +45,7 @@ export const LocationProvider = ({ children }) => {
   }, []);
 
   return (
-    <LocationContext.Provider value={{ location, loading, error }}>
+    <LocationContext.Provider value={{ location, setLocation, loading, error }}>
       {children}
     </LocationContext.Provider>
   );

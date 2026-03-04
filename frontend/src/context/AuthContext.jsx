@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { axiosWrapper as axios } from '../apis/axiosWrapper';
 
 const AuthContext = createContext();
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, name, phone, password, isSignup) => {
         try {
-            const response = await axios.post('/api/v1/auth/unified', { email, name, phone, password, isSignup });
+            const response = await axios.post('/auth/unified', { email, name, phone, password, isSignup });
             const { user, tokens } = response.data;
 
             setUser(user);
@@ -43,10 +43,7 @@ export const AuthProvider = ({ children }) => {
 
     const updateUser = async (updateData) => {
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await axios.patch('/api/v1/users/update-me', updateData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await axios.patch('/users/update-me', updateData);
             const { data } = response.data;
             setUser(data);
             localStorage.setItem('user', JSON.stringify(data));
@@ -58,10 +55,7 @@ export const AuthProvider = ({ children }) => {
 
     const changePassword = async (oldPassword, newPassword) => {
         try {
-            const token = localStorage.getItem('accessToken');
-            await axios.patch('/api/v1/auth/change-password', { oldPassword, newPassword }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await axios.patch('/auth/change-password', { oldPassword, newPassword });
             return { success: true };
         } catch (error) {
             return { success: false, error: error.response?.data?.message || 'Password update failed' };
@@ -70,10 +64,7 @@ export const AuthProvider = ({ children }) => {
 
     const placeOrder = async (orderData) => {
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await axios.post('/api/v1/orders', orderData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await axios.post('/orders', orderData);
             return { success: true, order: response.data.order };
         } catch (error) {
             return { success: false, error: error.response?.data?.message || 'Booking failed' };
@@ -82,10 +73,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchMyOrders = async () => {
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await axios.get('/api/v1/orders/my-orders', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await axios.get('/orders/my-orders');
             return { success: true, orders: response.data.orders };
         } catch (error) {
             return { success: false, error: error.response?.data?.message || 'Failed to fetch orders' };

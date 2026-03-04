@@ -9,6 +9,9 @@ import { useLocation } from "react-router-dom";
 import SeatLayout from "./pages/SeatLayout";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
+import Events from "./pages/Events";
+import EventBooking from "./pages/EventBooking";
+
 function App() {
   const location = useLocation();
   const isSeatLayout = location.pathname.includes("/seat-layout");
@@ -27,6 +30,8 @@ function App() {
             <Route path="/shows/:showId/seat-layout" element={<SeatLayout />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventBooking />} />
           </Routes>
         </main>
         {!isSeatLayout && !isCheckoutPage && <Footer />}

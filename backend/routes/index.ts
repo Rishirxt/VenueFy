@@ -6,6 +6,7 @@ import locationRoutes from "../src/modules/location/location.route";
 import authRoutes from "../src/modules/auth/auth.route";
 import orderRoutes from "../src/modules/order/order.routes";
 import userRoutes from "../src/modules/user/user.routes";
+import eventRoutes from "../src/modules/event/event.route";
 
 const router = express.Router();
 
@@ -16,5 +17,7 @@ router.use("/location", locationRoutes);
 router.use("/auth", authRoutes);
 router.use("/orders", orderRoutes);
 router.use("/users", userRoutes);
-router.use("/user", userRoutes); // Adding /user as a fallback
+router.use("/user", userRoutes);
+router.use("/events", eventRoutes);
+
 export default router;

@@ -1,18 +1,18 @@
 // seed/showSeeder.ts
 import mongoose from "mongoose";
 import dayjs from "dayjs";
-import { MovieModel } from "../modules/movie/movie.model";
-import { TheaterModel } from "../modules/theater/theater.model";
-import { ShowModel } from "../modules/show/show.model";
-import { config } from "../config/config";
-import { generateSeatLayout } from "../utils/index"
+import { MovieModel } from "./src/modules/movie/movie.model";
+import { TheaterModel } from "./src/modules/theatre/theater.model";
+import { ShowModel } from "./src/modules/show/show.model";
+import { config } from "./src/config/config";
+import { generateSeatLayout } from "./src/utils/index"
 
 
 const generatePriceMap = () =>
     new Map([
         ["PREMIUM", 510],
         ["EXECUTIVE", 290],
-        ["NORMAL", 270],
+        ["NORMAL", 180],
     ]);
 
 const formats = ["2D", "3D", "IMAX", "PVR PXL"];
@@ -26,69 +26,58 @@ const fixedTimeSlots = [
     { start: "10:30 PM", end: "01:00 AM" },
 ];
 
-const toDateWithTime = (baseDate: Date, timeStr: string) => {
-    return dayjs(baseDate)
-        .hour(dayjs(timeStr, ["hh:mm A"]).hour())
-        .minute(dayjs(timeStr, ["hh:mm A"]).minute())
-        .second(0)
-        .toDate();
-};
-
-export const seedShow = async () => {
-    const movieIds = ["68e224451aeabaafaa43ac58", "68e224451aeabaafaa43ac57"];
-    const movies = await MovieModel.find({ _id: { $in: movieIds } });
-    const theatres = await TheaterModel.find({ state: "West Bengal" });
+export const seedShows = async () => {
+    const movies = await MovieModel.find({});
+    const theatres = await TheaterModel.find({});
 
     if (!movies.length || !theatres.length) {
-        console.error("Movies or theatres not found. Please check IDs or state name.");
+        console.error("Movies or theatres not found. Please seed movies and theaters first.");
         return;
     }
 
-    const today = dayjs().startOf("day");
+    console.log(`Found ${movies.length} movies and ${theatres.length} theatres. Generating shows...`);
 
-    for (const movie of movies) {
-        for (const theatre of theatres) {
-            for (let d = 0; d < 2; d++) { // ✅ today and tomorrow
+    const today = dayjs().startOf("day");
+    let showsCreated = 0;
+
+    for (const theatre of theatres) {
+        for (const movie of movies) {
+            for (let d = 0; d < 7; d++) { // every day for next 7 days
                 const showDate = today.add(d, "day");
-                const formattedDate = showDate.format("DD-MM-YYYY");
-                const numShows = Math.floor(Math.random() * 3) + 2; // 2–4 shows
-                const selectedSlots = fixedTimeSlots.slice(0, numShows);
+                const formattedDate = showDate.format("DD-MM-YY");
+                // 3 fixed time slots per day per movie/theatre combo
+                const selectedSlots = fixedTimeSlots.slice(0, 3);
 
                 for (const slot of selectedSlots) {
-                    const startTime = toDateWithTime(showDate.toDate(), slot.start);
-                    const endTime = toDateWithTime(showDate.toDate(), slot.end);
-
                     const newShow = new ShowModel({
                         movie: movie._id,
                         theater: theatre._id,
-                        location: theatre.state,
+                        location: theatre.state, // ✅ store state name
                         format: formats[Math.floor(Math.random() * formats.length)],
                         audioType: "Dolby 7.1",
                         startTime: slot.start,
-                        date: formattedDate, // ✅ "DD-MM-YYYY"
+                        date: formattedDate,
                         priceMap: generatePriceMap(),
                         seatLayout: generateSeatLayout(),
                     });
 
                     await newShow.save();
-                    console.log(
-                        `🎬 Show created for ${movie.title} at ${theatre.name} on ${formattedDate} (${slot.start} - ${slot.end})`
-                    );
+                    showsCreated++;
                 }
             }
         }
     }
 
-    console.log("✅ Show seeding completed for selected movies in West Bengal.");
+    console.log(`✅ Show seeding completed. ${showsCreated} shows created across all states.`);
 };
 
 mongoose
-    .connect(config.databaseUrl as string)
+    .connect(config.databaseURL as string)
     .then(async () => {
         console.log("DB connected");
         await ShowModel.deleteMany({});
         console.log("🧹 Existing shows deleted.");
-        await seedShow();
+        await seedShows();
         mongoose.disconnect();
     })
     .catch((err) => console.log(err));

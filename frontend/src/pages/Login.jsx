@@ -51,7 +51,7 @@ const Login = () => {
                         {isSignup ? 'Create Account' : 'Welcome Back'}
                     </h2>
                     <p className="mt-3 text-sm text-gray-500 font-medium">
-                        {isSignup ? 'Join BookMyScreen to start booking' : 'Signin to your account'}
+                        {isSignup ? 'Join VenueFy to start booking' : 'Signin to your account'}
                     </p>
                 </div>
 

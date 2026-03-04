@@ -13,7 +13,7 @@ export const reverseGeocode: RequestHandler = async (req, res) => {
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
             {
                 headers: {
-                    "User-Agent": "BookMyScreen-App/1.0",
+                    "User-Agent": "VenueFy-App/1.0",
                 },
             }
         );

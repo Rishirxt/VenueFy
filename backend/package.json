@@ -1,5 +1,5 @@
 {
-  "name": "bookmyscreen",
+  "name": "venuefy",
   "version": "1.0.0",
   "description": "Movie Booking System",
   "main": "index.ts",
@@ -9,9 +9,9 @@
     "start": "node dist/index.js",
     "seed:theaters": "tsx seed-theaters.ts",
     "seed:movies": "tsx seed-movies.ts",
-    "seed:shows": "tsx seed-shows.ts"
+    "seed:shows": "tsx seed-shows.ts",
+    "seed:events": "tsx seed-events.ts"
   },
-  "author": "ProgrammingWithAmrit",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",

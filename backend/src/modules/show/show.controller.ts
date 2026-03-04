@@ -45,14 +45,25 @@ export const updateSeatStatus = async (
     try {
         const { row, seatNumber, status } = req.query;
 
-        const updatedShow = await ShowService.updateSeatStatus(
+        const seatKey = `${row}-${seatNumber}`;
+
+        const updatedShow = await ShowService.updateMultipleSeatsStatus(
             req.params.showId,
-            row as string,
-            Number(seatNumber),
+            [seatKey],
             status as "AVAILABLE" | "BOOKED" | "BLOCKED"
         );
 
         res.status(201).json(updatedShow);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getAllShows = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { state } = req.query;
+        const shows = await ShowService.getAllShows(state as string);
+        res.status(200).json(shows);
     } catch (error) {
         next(error);
     }

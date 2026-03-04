@@ -14,8 +14,8 @@ const connectDB = async () => {
 export const config = {
     port: process.env.PORT || 3000,
     databaseURL: process.env.MONGO_CONNECTION_STRING,
-    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET as string,
-    refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET as string,
+    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || 'venuefy_access_token_secret_456',
+    refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || 'venuefy_refresh_token_secret_789',
 };
 
 export default connectDB;

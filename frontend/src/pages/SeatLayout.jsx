@@ -40,17 +40,18 @@ const SeatLayout = () => {
         select: (res) => res.data,
     });
 
-    const getPriceByRow = (row) => {
-        const rowChar = row.toUpperCase();
-        if (['A', 'B', 'C'].includes(rowChar)) return 10;
-        if (['D', 'E', 'F'].includes(rowChar)) return 15;
-        if (['G', 'H'].includes(rowChar)) return 20;
-        return 10; // Default
-    };
+    // Build a rowPrice lookup from seatLayout data
+    const rowPriceMap = useMemo(() => {
+        const map = {};
+        showData?.seatLayout?.forEach(rowObj => {
+            map[rowObj.row] = rowObj.price;
+        });
+        return map;
+    }, [showData]);
 
     const handleSeatToggle = (seat, row) => {
         const seatKey = `${row}-${seat.number}`;
-        const price = getPriceByRow(row);
+        const price = rowPriceMap[row] ?? 0;
         setSelectedSeats((prev) => {
             if (prev.find(s => s.key === seatKey)) {
                 return prev.filter(s => s.key !== seatKey);
@@ -117,7 +118,7 @@ const SeatLayout = () => {
                             <div key={type} className="w-full">
                                 <div className="flex items-center gap-4 mb-6">
                                     <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
-                                        {type} : ₹{getPriceByRow(rows[0].row)}
+                                        {type} : ₹{rowPriceMap[rows[0]?.row] ?? price}
                                     </h3>
                                     <div className="h-[1px] flex-grow bg-gray-100"></div>
                                 </div>

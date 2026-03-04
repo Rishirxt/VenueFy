@@ -1,11 +1,14 @@
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getMoviesById } from '../apis'
 import TheaterTimings from '../components/movies/TheaterTimings'
 import { movies } from '../utils/constants'
+import { toast } from 'react-hot-toast'
 
 const MovieDetails = () => {
     const { id } = useParams();
+    const [selectedFilters, setSelectedFilters] = useState([]);
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['movie', id],
@@ -14,8 +17,40 @@ const MovieDetails = () => {
 
     const movie = data?.data?.movie;
 
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: movie.title,
+                    text: `Check out ${movie.title} on VenueFy!`,
+                    url: window.location.href,
+                });
+            } catch (error) {
+                console.error('Error sharing:', error);
+            }
+        } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(window.location.href);
+            toast.success("Link copied to clipboard!");
+        }
+    };
+
+    const handleRateNow = () => {
+        toast.success("Rating submitted! (Mockup)");
+    };
+
+    const toggleFilter = (filter) => {
+        setSelectedFilters(prev =>
+            prev.includes(filter)
+                ? prev.filter(f => f !== filter)
+                : [...prev, filter]
+        );
+    };
+
     if (isLoading) return <div className="h-screen flex items-center justify-center text-white bg-black">Loading movie details...</div>;
     if (isError || !movie) return <div className="h-screen flex items-center justify-center text-red-500 bg-black">Error loading movie details.</div>;
+
+    const availableFilters = ["2D", "3D", "Wheelchair Friendly", "Premium Seats", "Recliners", "IMAX", "PVR PXL", "4DX", "Laser", "Dolby Atmos"];
 
     return (
         <>
@@ -47,8 +82,10 @@ const MovieDetails = () => {
                                 <span className='text-gray-300'>
                                     {movie.votes} Votes
                                 </span>
-                                <button className='cursor-pointer bg-[#2f2f2f] ml-6 px-4 py-2
-                        rounded-md hover:bg-[#4a4a4a]'>
+                                <button
+                                    onClick={handleRateNow}
+                                    className='cursor-pointer bg-[#2f2f2f] ml-6 px-4 py-2
+                        rounded-md hover:bg-[#4a4a4a] transition-colors'>
                                     Rate now
                                 </button>
                             </div>
@@ -78,7 +115,9 @@ const MovieDetails = () => {
                     </div>
                     {/* Share buttons */}
                     <div className="absolute top-0 right-0 cursor-pointer">
-                        <button className="cursor-pointer bg-[#3a3a3a] px-4 py-2 rounded text-sm flex items-center gap-2">
+                        <button
+                            onClick={handleShare}
+                            className="cursor-pointer bg-[#3a3a3a] px-4 py-2 rounded text-sm flex items-center gap-2 hover:bg-[#4a4a4a] transition-colors">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M18 16.08c-.76 0-1.44.3-1.96.77l-7.13-4.21c.05-.25.09-.51.09-.78s-.03-.53-.09-.78l7.04-4.15c.54.5 1.25.81 2.05.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .27.04.52.09.78L7.91 9.93C7.38 9.43 6.67 9.12 5.87 9.12c-1.66 0-3 1.34-3 3s1.34 3 3 3c.8 0 1.51-.31 2.04-.81l7.13 4.21c-.06.24-.1.49-.1 1.75 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z" />
                             </svg>
@@ -93,16 +132,18 @@ const MovieDetails = () => {
             <div className='w-full bg-white px-4 py-8'>
                 <div className='max-w-7xl mx-auto'>
                     <div className='flex flex-wrap gap-3 mb-4'>
-                        <button className='px-4 py-2 bg-white text-black rounded-md text-sm font-medium border border-gray-300 hover:bg-gray-100'>2D</button>
-                        <button className='px-4 py-2 bg-white text-black rounded-md text-sm font-medium border border-gray-300 hover:bg-gray-100'>3D</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>Wheelchair Friendly</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>Premium Seats</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>Recliners</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>IMAX</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>PVR PXL</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>4DX</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>Laser</button>
-                        <button className='px-4 py-2 border border-gray-400 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100'>Dolby Atmos</button>
+                        {availableFilters.map((filter) => (
+                            <button
+                                key={filter}
+                                onClick={() => toggleFilter(filter)}
+                                className={`px-4 py-2 rounded-md text-sm font-medium border transition-colors ${selectedFilters.includes(filter)
+                                        ? 'bg-[#f84464] text-white border-[#f84464]'
+                                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+                                    }`}
+                            >
+                                {filter}
+                            </button>
+                        ))}
                     </div>
 
                     {/* Legend */}
@@ -120,7 +161,7 @@ const MovieDetails = () => {
                             <span>Almost full</span>
                         </div>
                     </div>
-                    <TheaterTimings movieId={id} />
+                    <TheaterTimings movieId={id} selectedFilters={selectedFilters} />
                 </div>
 
             </div>

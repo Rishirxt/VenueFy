@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import dayjs from 'dayjs'
-import { theatres } from '../../utils/constants'
+
 import { useNavigate } from 'react-router-dom';
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { getShowsByMovieAndLocation } from '../../apis';
 import { useLocation } from '../../context/locationcontext';
-const TheaterTimings = ({ movieId }) => {
+const TheaterTimings = ({ movieId, selectedFilters = [] }) => {
   const navigate = useNavigate();
   const { location, loading, error } = useLocation();
   const today = dayjs();
@@ -19,15 +19,41 @@ const TheaterTimings = ({ movieId }) => {
       const response = await getShowsByMovieAndLocation(movieId, location, formattedDate);
       return response.data;
     },
-    placeholderData: keepPreviousData, // retain previous results while fetching new date/location
-    enabled: !!location // Only run query if location is available
+    placeholderData: keepPreviousData,
+    enabled: !!location
   });
+
+  const filteredShowData = useMemo(() => {
+    if (!showData) return [];
+    if (selectedFilters.length === 0) return showData;
+
+    return showData.map(theaterGroup => {
+      const filteredShows = theaterGroup.theater.shows.filter(slot => {
+        const format = slot.audioType?.toUpperCase();
+        // Check if any selected filter matches the show format or any other property
+        return selectedFilters.some(filter =>
+          format?.includes(filter.toUpperCase()) ||
+          filter.toUpperCase().includes(format || "")
+        );
+      });
+
+      return {
+        ...theaterGroup,
+        theater: {
+          ...theaterGroup.theater,
+          shows: filteredShows
+        }
+      };
+    }).filter(theaterGroup => theaterGroup.theater.shows.length > 0);
+  }, [showData, selectedFilters]);
+
   if (loading) return <div className="text-center py-4">Getting your location...</div>;
   if (error) return <div className="text-center py-4 text-red-500">{error}</div>;
   if (!location) return <div className="text-center py-4">Location not available. Please enable location services.</div>;
 
   if (isLoading) return <div className="text-center py-4">Loading shows...</div>;
   if (isError) return <div className="text-center py-4 text-red-500">Error loading shows. Please try again.</div>;
+
   return (
     <>
       <hr className='my-2 border-gray-200' />
@@ -50,13 +76,13 @@ const TheaterTimings = ({ movieId }) => {
       </div>
       {/* Theater */}
       <div className="space-y-8 px-4 mb-10">
-        {showData.length === 0 && (
+        {filteredShowData.length === 0 && (
           <div className="text-center text-gray-500 py-10">
-            No shows available for the selected date and location.
+            No shows available for the selected filters, date and location.
           </div>
         )}
 
-        {showData.map((curr, i) => (
+        {filteredShowData.map((curr, i) => (
           <div key={i}>
             <div className="flex items-start gap-3 mb-2">
               <img
@@ -72,8 +98,6 @@ const TheaterTimings = ({ movieId }) => {
             {/* // Timings */}
             <div className="flex flex-wrap gap-3 ml-11">
               {curr.theater.shows.map((slot, j) => {
-                const theaterId = curr.theater.theaterDetails._id;
-                const movieName = curr.movie.title.toLowerCase().replace(/\s+/g, '-').replace(/:/g, '');
                 return (
                   <button onClick={() => navigate(`/shows/${slot._id}/seat-layout`)}
                     key={j}

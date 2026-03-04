@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { tabs } from '../utils/constants'
-import { IoMdAdd } from 'react-icons/io'
-import { FiEdit } from 'react-icons/fi'
 import BookingHistory from '../components/profile/BookingHistory'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useSearchParams } from 'react-router-dom'
 
 const PasswordChangeSection = () => {
     const { changePassword } = useAuth();
@@ -85,6 +84,7 @@ const PasswordChangeSection = () => {
 
 const Profile = () => {
     const { user, updateUser } = useAuth();
+    const [searchParams] = useSearchParams();
     const [activeTab, setActiveTab] = useState("Profile");
     const [formData, setFormData] = useState({
         name: "",
@@ -93,6 +93,12 @@ const Profile = () => {
     });
     const [isUpdating, setIsUpdating] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
+
+    useEffect(() => {
+        if (searchParams.get('tab') === 'orders') {
+            setActiveTab('Your Orders');
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         if (user) {
@@ -160,7 +166,7 @@ const Profile = () => {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-semibold">Hi, {user?.name}</h2>
-                                    <p className="text-sm text-gray-200">BookMyScreen Member</p>
+                                    <p className="text-sm text-gray-200">VenueFy Member</p>
                                 </div>
                             </div>
 

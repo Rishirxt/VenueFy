@@ -4,6 +4,7 @@ import * as ShowController from "./show.controller";
 const router = Router();
 
 router.post("/", ShowController.createShow);
+router.get("/all", ShowController.getAllShows);
 router.get("/", ShowController.getShowsByMovieDateLocation);
 router.get("/:id", ShowController.getShowById);
 router.put("/:showId", ShowController.updateSeatStatus);

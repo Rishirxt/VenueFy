@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { createUser, getUserByEmail, getUserById } from '../user/user.service';
-import { generateToken, storeRefreshToken } from './token.service';
+import { generateToken, storeRefreshToken, verifyRefreshToken, findRefreshToken } from './token.service';
 import { IUser } from '../user/user.interface';
 
 export const unifiedLoginSignup = async (req: Request, res: Response) => {
@@ -95,5 +95,33 @@ export const changePasswordController = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error('Change Password Error:', error);
         res.status(500).json({ message: error.message || 'Internal Server Error' });
+    }
+}
+
+export const refreshAccessTokenController = async (req: Request, res: Response) => {
+    try {
+        const { refreshToken } = req.body;
+        if (!refreshToken) {
+            return res.status(401).json({ message: 'Refresh token required' });
+        }
+
+        const decoded = verifyRefreshToken(refreshToken) as any;
+        const storedToken = await findRefreshToken(decoded.id, refreshToken);
+        if (!storedToken) {
+            return res.status(401).json({ message: 'Invalid refresh token' });
+        }
+
+        const user = await getUserById(decoded.id);
+        if (!user) {
+            return res.status(401).json({ message: 'User not found' });
+        }
+
+        const payload = { id: (user as any)._id.toString(), phone: user.phone || '', email: user.email, role: user.role };
+        const { accessToken, refreshToken: newRefreshToken } = await generateToken(payload);
+        await storeRefreshToken((user as any)._id.toString(), newRefreshToken);
+
+        res.status(200).json({ accessToken, refreshToken: newRefreshToken });
+    } catch (error: any) {
+        res.status(401).json({ message: 'Invalid or expired refresh token' });
     }
 }
