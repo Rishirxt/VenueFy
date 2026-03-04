@@ -10,7 +10,6 @@
 
 ## � Presentation Highlights
 
-- **Seamless Rebranding**: Successfully transitioned from "BookMyScreen" to a more premium "VenueFy" identity.
 - **Dynamic Live Events**: A newly implemented module for browsing and booking tickets for concerts, sports, and theatre performances.
 - **Interactive Seat Mapping**: Real-time seat selection with distinct pricing tiers and availability status.
 - **Location-Aware Experience**: Smart filtering based on user-selected cities to show relevant local content.
