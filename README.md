@@ -2,7 +2,6 @@
 
 **VenueFy** is a modern, full-stack venue booking and management platform. It allows users to discover, list, and reserve spaces for events, weddings, or corporate gatherings with a seamless, high-performance interface.
 
-![VenueFy Banner](https://via.placeholder.com/1000x400?text=VenueFy+Booking+Platform)
 
 ## 🚀 Features
 
